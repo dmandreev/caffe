@@ -1,26 +1,27 @@
 #ifndef CAFFE_UTIL_IO_H_
 #define CAFFE_UTIL_IO_H_
 
-#include <unistd.h>
+#include <boost/filesystem.hpp>
+#include <iomanip>
+#include <iostream>  // NOLINT(readability/streams)
 #include <string>
 
 
 
 #include "google/protobuf/message.h"
-#include "hdf5.h"
-#include "hdf5_hl.h"
 
-#include "caffe/blob.hpp"
 #include "caffe/common.hpp"
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/msvc.hpp"
+#include "caffe/util/format.hpp"
 
-#define HDF5_NUM_DIMS 4
+#ifndef CAFFE_TMP_DIR_RETRIES
+#define CAFFE_TMP_DIR_RETRIES 100
+#endif
 
 namespace caffe {
 
 using ::google::protobuf::Message;
-
 
 
 inline void MakeTempFilename(string* temp_filename) {
@@ -165,6 +166,7 @@ inline bool ReadImageToDatum(const string& filename, const int label,
 bool DecodeDatumNative(Datum* datum);
 bool DecodeDatum(Datum* datum, bool is_color);
 
+#ifdef USE_OPENCV
 cv::Mat ReadImageToCVMat(const string& filename,
     const int height, const int width, const bool is_color);
 
@@ -180,20 +182,7 @@ cv::Mat DecodeDatumToCVMatNative(const Datum& datum);
 cv::Mat DecodeDatumToCVMat(const Datum& datum, bool is_color);
 
 void CVMatToDatum(const cv::Mat& cv_img, Datum* datum);
-
-template <typename Dtype>
-void hdf5_load_nd_dataset_helper(
-    hid_t file_id, const char* dataset_name_, int min_dim, int max_dim,
-    Blob<Dtype>* blob);
-
-template <typename Dtype>
-void hdf5_load_nd_dataset(
-    hid_t file_id, const char* dataset_name_, int min_dim, int max_dim,
-    Blob<Dtype>* blob);
-
-template <typename Dtype>
-void hdf5_save_nd_dataset(
-    const hid_t file_id, const string& dataset_name, const Blob<Dtype>& blob);
+#endif  // USE_OPENCV
 
 }  // namespace caffe
 

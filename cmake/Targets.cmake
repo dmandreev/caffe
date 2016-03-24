@@ -18,8 +18,7 @@ else()
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(Caffe_LINK -Wl,--whole-archive caffe -Wl,--no-whole-archive)
   endif()
-endif()
-
+endmacro()
 ################################################################################################
 # Convenient command to setup source group for IDEs that support this feature (VS, XCode)
 # Usage:
